@@ -4,6 +4,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -15,6 +16,7 @@ import wundershoppinglist.service.WunderlistRestServiceImpl;
  * Created by osamo on 6/23/2017.
  */
 @Configuration
+@ComponentScan(basePackages = {"wundershoppinglist.*"})
 public class HttpConfiguration {
 
     private static final String WUNDERLIST_API_URL = "a.wunderlist.com/api/v1/";
