@@ -9,17 +9,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
-import wundershoppinglist.service.WunderlistRestService;
-import wundershoppinglist.service.WunderlistRestServiceImpl;
 
 /**
  * Created by osamo on 6/23/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"wundershoppinglist.*"})
+@ComponentScan(basePackages = {"wundershoppinglist"})
 public class HttpConfiguration {
-
-    private static final String WUNDERLIST_API_URL = "a.wunderlist.com/api/v1/";
 
     @Bean
     public HttpClient httpClient() {
@@ -44,14 +40,8 @@ public class HttpConfiguration {
     }
 
     @Bean
-    public RestTemplate restTemplate() {
+    public RestTemplate wunderlistRestTemplate() {
         return new RestTemplate(httpClientFactory());
-    }
-
-    @Bean
-    public WunderlistRestService wunderlistRestService() {
-        return new WunderlistRestServiceImpl(restTemplate(),
-                WUNDERLIST_API_URL);
     }
 
 }
