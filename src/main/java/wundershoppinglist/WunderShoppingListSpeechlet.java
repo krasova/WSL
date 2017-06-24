@@ -4,23 +4,38 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.*;
 import com.amazon.speech.ui.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import wundershoppinglist.dto.Task;
+import wundershoppinglist.service.WunderlistRestService;
 
 /**
  * Created by osamo on 6/13/2017.
  */
+@Slf4j
 public class WunderShoppingListSpeechlet implements Speechlet {
+
+    @Autowired
+    WunderlistRestService wunderlistRestService;
+
     @Override
     public void onSessionStarted(SessionStartedRequest sessionStartedRequest, Session session) throws SpeechletException {
-
+        log.info("onSessionStarted requestId={}, sessionId={}", sessionStartedRequest.getRequestId(),
+                session.getSessionId());
     }
 
     @Override
     public SpeechletResponse onLaunch(LaunchRequest launchRequest, Session session) throws SpeechletException {
+        log.info("onLaunch requestId={}, sessionId={}", launchRequest.getRequestId(),
+                session.getSessionId());
         return null;
     }
 
     @Override
     public SpeechletResponse onIntent(IntentRequest intentRequest, Session session) throws SpeechletException {
+        log.info("onIntent requestId={}, sessionId={}", intentRequest.getRequestId(),
+                session.getSessionId());
+
         Intent intent = intentRequest.getIntent();
         String intentName = intent.getName();
 
@@ -38,7 +53,7 @@ public class WunderShoppingListSpeechlet implements Speechlet {
     }
 
     private SpeechletResponse handleHelpRequest() {
-        String repromptText = "What do you want to add to shopping wunderlist?";
+        String repromptText = "What do you want to add to List?";
         String speechOutput = repromptText;
 
         return newAskResponse(speechOutput, repromptText);
@@ -57,14 +72,16 @@ public class WunderShoppingListSpeechlet implements Speechlet {
     }
 
     private SpeechletResponse handleAddIntentRequest(Intent intent, Session session) {
+
         Slot itemSlot = intent.getSlot("item");
+        wunderlistRestService.addTaskToWunderlist(Task.builder().list_id(142353947).title(itemSlot.getValue()).build());
         // Create the Simple card content.
         SimpleCard card = new SimpleCard();
-        card.setTitle("Shopping Wunderlist");
-        card.setContent("test");
+        card.setTitle("List");
+        card.setContent(itemSlot.getValue());
         // Create the plain text output
         PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
-        outputSpeech.setText("test");
+        outputSpeech.setText(itemSlot.getValue());
         return SpeechletResponse.newTellResponse(outputSpeech, card);
     }
 
@@ -117,4 +134,5 @@ public class WunderShoppingListSpeechlet implements Speechlet {
         reprompt.setOutputSpeech(repromptOutputSpeech);
         return SpeechletResponse.newAskResponse(outputSpeech, reprompt);
     }
+
 }
